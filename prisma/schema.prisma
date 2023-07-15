@@ -3,11 +3,10 @@
 
 generator client {
     provider = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mongodb"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -15,16 +14,35 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Registrations {
+    id                String @id @default(auto()) @map("_id") @db.ObjectId
+    creator           String @db.ObjectId
+    firstname         String
+    lastname          String
+    phone             String
+    birthdate         String
+    nationality       String
+    address           String
+    gender            String
+    desiredOccupation String
+    desiredLocation   String
+    desiredSalary     String
+    jobID             String
+    file              File?
+}
+
+model File {
+    id             String        @id @default(auto()) @map("_id") @db.ObjectId
+    data           Bytes
+    contentType    String
+    registration   Registrations @relation(fields: [registrationId], references: [id])
+    registrationId String        @db.ObjectId @unique
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId            String  @db.ObjectId
     type              String
     provider          String
     providerAccountId String
@@ -41,15 +59,15 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(cuid())
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
     sessionToken String   @unique
-    userId       String
+    userId       String   @db.ObjectId
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String    @id @default(auto()) @map("_id") @db.ObjectId
     name          String?
     email         String?   @unique
     emailVerified DateTime?
@@ -59,6 +77,7 @@ model User {
 }
 
 model VerificationToken {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
     identifier String
     token      String   @unique
     expires    DateTime
