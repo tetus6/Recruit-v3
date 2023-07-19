@@ -23,7 +23,9 @@ const RegistrationPage = () => {
     jobID: "",
     file: "",
   });
+
   const mutation = api.registration.create.useMutation();
+
 
   const handlesubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

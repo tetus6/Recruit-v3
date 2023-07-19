@@ -50,6 +50,5 @@ export const registrationRouter = createTRPCRouter({
 
       return registration;
     }),
-  fileOperation: 
-    
 });
+

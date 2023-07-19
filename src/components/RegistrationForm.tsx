@@ -1,5 +1,8 @@
 import Link from "next/link";
-import Image from "next/image"
+import Image from "next/image";
+import { useState } from "react";
+import { api } from "~/utils/api";
+import type { RouterInputs } from "~/utils/api";
 
 // export interface RegistrationForm {
 //   registration: Registration;
@@ -8,24 +11,58 @@ import Image from "next/image"
 //   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 // }
 
-const RegistrationForm = ({
+type RegistrationInput = RouterInputs["registration"]["create"];
+
+
+interface RegistrationFormProps {
+  registration: RegistrationInput;
+  setRegistration: React.Dispatch<React.SetStateAction<RegistrationInput>>;
+  submitting: boolean;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+}
+
+const RegistrationForm: React.FC<RegistrationFormProps> = ({
   registration,
   setRegistration,
   submitting,
   handleSubmit,
 }) => {
-  function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
+  const [file, setFile] = useState<File | null>(null);
+  const fileMutation = api.file.createPresignedUrl.useMutation();
+
+  //router for creating presigned url
+  //router for refetching images
+
+  const uploadImage = async (e) => {
+    e.preventDefault();
+    if (!file) return;
+    const { url, fields } = await fileMutation.mutateAsync(file.type);
+    const formData = new FormData()
+
+    Object.entries({ ...fields,'Content-Type': file.type, file }).forEach(([key, value]) => {
+      formData.append(key, value)
+    })
+
+    const upload = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+  
+    if (upload.ok) {
+      console.log('Uploaded successfully!')
+    } else {
+      console.error('Upload failed.')
+    }
+
+    // const fileQuery = api.file.getFileUrl.useQuery();
+    // const fileUrl = fileQuery.data;
+
+  
+    // setRegistration({ ...registration, url: fileUrl })
+    setFile(null);
+
+    //refetch image unnecessary in my case
+  };
 
   return (
     <section className="flex-start w-full max-w-full flex-col">
@@ -340,25 +377,27 @@ const RegistrationForm = ({
         </label>
         <label>
           <span className="text-base">Resume Upload</span>
-          {/* <Image
+          <Image
             src={registration.file}
             width={500}
             height={500}
             alt="Picture of the author"
-          /> */}
+          />
           <input
             type="file"
             accept=".jpeg, .png, .jpg, .pdf"
             onChange={(e) => {
-              convertToBase64(e.target.files[0]).then((e) => {
-                setRegistration({
-                  ...registration,
-                  file: e,
-                });
-              });
+              setFile(e.target.files[0])
             }}
             required
           />
+          <button
+          type="submit"
+          className="rounded-full px-5 py-1.5 text-sm text-black"
+          onClick={uploadImage}
+          >
+            upload
+          </button>
         </label>
 
         <div className="flex-end mx-3 mb-5 gap-4">

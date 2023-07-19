@@ -28,15 +28,13 @@ model Registrations {
     desiredLocation   String
     desiredSalary     String
     jobID             String
-    file              File?
+    file              String
 }
 
 model File {
-    id             String        @id @default(auto()) @map("_id") @db.ObjectId
-    data           Bytes
-    contentType    String
-    registration   Registrations @relation(fields: [registrationId], references: [id])
-    registrationId String        @db.ObjectId @unique
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    creator String @db.ObjectId
+    url     String
 }
 
 // Necessary for Next auth
