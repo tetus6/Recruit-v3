@@ -50,5 +50,9 @@ export const registrationRouter = createTRPCRouter({
 
       return registration;
     }),
+
+    // findExisting: publicProcedure.query(({ ctx }) => {
+    //   return ctx.prisma.registrations.find
+    // }),
 });
 

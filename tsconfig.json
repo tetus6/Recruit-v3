@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "src/pages/subpages/cardDetail/[cardId].js", "src/pages/subpages/cardDetail/[cardId].js"  ],
   "exclude": ["node_modules"]
 }

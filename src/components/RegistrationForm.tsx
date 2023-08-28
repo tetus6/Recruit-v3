@@ -3,6 +3,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import type { RouterInputs } from "~/utils/api";
+import router from "next/router";
+import React from "react";
 
 // export interface RegistrationForm {
 //   registration: Registration;
@@ -11,24 +13,54 @@ import type { RouterInputs } from "~/utils/api";
 //   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 // }
 
-type RegistrationInput = RouterInputs["registration"]["create"];
+export type RegistrationInput = RouterInputs["registration"]["create"];
 
+// interface RegistrationFormProps {
+//   registration: RegistrationInput;
+//   setRegistration: React.Dispatch<React.SetStateAction<RegistrationInput>>;
+//   submitting: boolean;
+//   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+// }
 
-interface RegistrationFormProps {
-  registration: RegistrationInput;
-  setRegistration: React.Dispatch<React.SetStateAction<RegistrationInput>>;
-  submitting: boolean;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-}
-
-const RegistrationForm: React.FC<RegistrationFormProps> = ({
-  registration,
-  setRegistration,
-  submitting,
-  handleSubmit,
-}) => {
+const RegistrationForm: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const fileMutation = api.file.createPresignedUrl.useMutation();
+  const [submitting, setSubmitting] = useState(false);
+  const [registration, setRegistration] = useState<RegistrationInput>({
+    creator: "",
+    firstname: "",
+    lastname: "",
+    phone: "",
+    birthdate: "",
+    nationality: "",
+    address: "",
+    gender: "",
+    desiredOccupation: "",
+    desiredLocation: "",
+    desiredSalary: "",
+    jobID: "",
+    file: "",
+  });
+
+  
+
+  const mutation = api.registration.create.useMutation();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      mutation.mutate(registration);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await router.push("/");
+      setSubmitting(false);
+    }
+    //need to know how to receive response from prisma that the data
+    //has been successfully pushed -> then setsubmitting to false and return to /
+  };
 
   //router for creating presigned url
   //router for refetching images
@@ -37,27 +69,28 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     e.preventDefault();
     if (!file) return;
     const { url, fields } = await fileMutation.mutateAsync(file.type);
-    const formData = new FormData()
+    const formData = new FormData();
 
-    Object.entries({ ...fields,'Content-Type': file.type, file }).forEach(([key, value]) => {
-      formData.append(key, value)
-    })
+    Object.entries({ ...fields, "Content-Type": file.type, file }).forEach(
+      ([key, value]) => {
+        formData.append(key, value);
+      }
+    );
 
     const upload = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       body: formData,
-    })
-  
+    });
+
     if (upload.ok) {
-      console.log('Uploaded successfully!')
+      console.log("Uploaded successfully!");
     } else {
-      console.error('Upload failed.')
+      console.error("Upload failed.");
     }
 
     // const fileQuery = api.file.getFileUrl.useQuery();
     // const fileUrl = fileQuery.data;
 
-  
     // setRegistration({ ...registration, url: fileUrl })
     setFile(null);
 
@@ -387,14 +420,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             type="file"
             accept=".jpeg, .png, .jpg, .pdf"
             onChange={(e) => {
-              setFile(e.target.files[0])
+              setFile(e.target.files[0]);
             }}
             required
           />
           <button
-          type="submit"
-          className="rounded-full px-5 py-1.5 text-sm text-black"
-          onClick={uploadImage}
+            type="submit"
+            className="rounded-full px-5 py-1.5 text-sm text-black"
+            onClick={uploadImage}
           >
             upload
           </button>

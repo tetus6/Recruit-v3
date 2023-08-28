@@ -11,8 +11,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Navbar/>
-      <Component {...pageProps} />
+      <Navbar />
+      <section>
+        <div className="h-16"></div>
+      </section>
+      <section className="bg-gray-900">
+        <Component {...pageProps} />
+      </section>
     </SessionProvider>
   );
 };
