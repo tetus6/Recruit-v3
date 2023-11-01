@@ -2,6 +2,8 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { registrationRouter } from "./routers/registration";
 import { fileRouter } from "./routers/file";
 import { jobsRouter } from "./routers/jobs";
+import { articlesRouter } from "./routers/articles";
+import { applicationRouter } from "./routers/application";
 
 export const config = {
   api: {
@@ -20,6 +22,8 @@ export const appRouter = createTRPCRouter({
   registration: registrationRouter,
   file: fileRouter,
   jobs: jobsRouter,
+  articles: articlesRouter,
+  application: applicationRouter,
 });
 
 // export type definition of API

@@ -2,20 +2,12 @@
 
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 
 const Navbar = () => {
   return (
     <nav className="fixed left-0 top-0 z-20 w-full border-b border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-900">
       <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
         <Link href="/" className="flex items-center">
-          <Image
-            src="https://flowbite.com/docs/images/logo.svg"
-            className="mr-3"
-            height={32}
-            width={32}
-            alt="Flowbite Logo"
-          />
           <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
             Recruit
           </span>

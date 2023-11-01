@@ -42,8 +42,6 @@ const RegistrationForm: React.FC = () => {
     file: "",
   });
 
-  
-
   const mutation = api.registration.create.useMutation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -58,8 +56,8 @@ const RegistrationForm: React.FC = () => {
       await router.push("/");
       setSubmitting(false);
     }
-    //need to know how to receive response from prisma that the data
-    //has been successfully pushed -> then setsubmitting to false and return to /
+    // need to know how to receive response from prisma that the data
+    // has been successfully pushed -> then setsubmitting to false and return to /
   };
 
   //router for creating presigned url
@@ -417,8 +415,10 @@ const RegistrationForm: React.FC = () => {
             alt="Picture of the author"
           />
           <input
+            id="dropzone-file"
             type="file"
             accept=".jpeg, .png, .jpg, .pdf"
+            className="hidden"
             onChange={(e) => {
               setFile(e.target.files[0]);
             }}

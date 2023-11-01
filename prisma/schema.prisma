@@ -31,6 +31,19 @@ model Registrations {
     file              String
 }
 
+model Application {
+    id                String @id @default(auto()) @map("_id") @db.ObjectId
+    jobId             String
+    firstname         String
+    lastname          String
+    email             String
+    phone             String
+    birthdate         String
+    nationality       String
+    gender            String
+    fileUrl              String
+}
+
 model Jobs {
     id          String @id @default(auto()) @map("_id") @db.ObjectId
     creator     String @db.ObjectId
@@ -41,6 +54,14 @@ model Jobs {
     salary      String
     detail      String
     requirement String
+}
+
+model Articles {
+    id      String @id @default(auto()) @map("_id") @db.ObjectId
+    creator String @db.ObjectId
+    name    String
+    type    String
+    content String
 }
 
 model File {

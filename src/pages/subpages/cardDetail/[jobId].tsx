@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import type { RouterOutputs } from "~/utils/api";
 
@@ -8,9 +7,10 @@ export type CardDetail = RouterOutputs["jobs"]["create"];
 
 const CardDetail = () => {
   const router = useRouter();
-  const { cardDetailId } = router.query; // Use destructuring here
-  const cardDetailQuery = api.jobs.fetchById.useQuery(cardDetailId);
+  const { jobId } = router.query;
+  const cardDetailQuery = api.jobs.fetchById.useQuery(jobId);
   const cardDetailQueryOutput = cardDetailQuery.data;
+  // fix jobId is undefined in initial refreshes
 
   if (cardDetailQueryOutput) {
     return (
@@ -83,12 +83,12 @@ const CardDetail = () => {
         </div>
         <div className="mx-20 mt-8 pb-20 grid grid-cols-6 gap-4">
           <div className="" />
-          <button
-            type="submit"
-            className=" col-start-5 rounded-full bg-red-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          <Link
+          href={`/main-navigation/application/${jobId}`}
+            className="col-start-5 rounded-full bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           >
             Apply now
-          </button>
+          </Link>
           <Link
             href="/"
             className="rounded-full bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"

@@ -3,7 +3,7 @@ import Link from "next/link";
 const TopSection = () => {
   return (
     <div className="bg-[url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80')]">
-      <div className="w-1/2 bg-red-600 bg-opacity-75">
+      <div className="w-1/2 bg-red-600/75">
         <div className="h-40" />
         <div className="flex flex-none flex-row flex-wrap justify-center ">
           <div className="basis-3/4">

@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 import { S3Client } from "@aws-sdk/client-s3";
 import { env } from "~/env.mjs";
@@ -14,7 +14,7 @@ const s3Client = new S3Client({
 });
 
 export const fileRouter = createTRPCRouter({
-  createPresignedUrl: protectedProcedure
+  createPresignedUrl: publicProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
       // const registrations = await ctx.prisma.registrations.findUnique({
@@ -66,7 +66,7 @@ export const fileRouter = createTRPCRouter({
       });
     }),
 
-  // uploadPdf: protectedProcedure.mutattion(async ({ ctx }) => {
+  // uploadPdf: publicProcedure.mutattion(async ({ ctx }) => {
   //   if (!ctx.session) {
   //     throw new TRPCError({
   //       code: "UNAUTHORIZED",
@@ -76,7 +76,7 @@ export const fileRouter = createTRPCRouter({
 
   //   const s3 = new AWS.S3();
   // }),
-  getFileUrl: protectedProcedure.query(async ({ ctx }) => {
+  getFileUrl: publicProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
   
     const file = await ctx.prisma.file.findFirst({
@@ -91,5 +91,10 @@ export const fileRouter = createTRPCRouter({
       return null; // or handle the case when no file is found
     }
   }),
+
+  createFileUrl: publicProcedure.input(z.string()).query(({input}) => {
+    const fileUrl = `https://recruit-t3-demo.s3.ap-northeast-1.amazonaws.com/${input}`;
+    return fileUrl;
+  })
   
 });
